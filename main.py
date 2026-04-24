@@ -16,3 +16,12 @@ posts: list[dict[str, str]] = [
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse(request, "home.html", {"posts": posts, "title": "Home Page"})
+
+@app.get("/posts/{post_id}")
+async def read_post(request: Request, post_id: str):
+    post = next((post for post in posts if post["id"] == post_id), None)
+    if post is None:
+        return templates.TemplateResponse(request, "404.html", {"request": request}, status_code=404)
+    return templates.TemplateResponse(request, "post.html", {"request": request, "post": post})
+
+
